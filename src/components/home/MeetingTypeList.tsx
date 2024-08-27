@@ -7,6 +7,7 @@ import MeetingModal from './MeetingModal'
 import { useUser } from '@clerk/clerk-react'
 import { useStreamVideoClient } from '@stream-io/video-react-bindings'
 import { Call } from '@stream-io/video-react-sdk'
+import { useToast } from "@/components/ui/use-toast"
 
 const MeetingTypeList = () => {
   const [values, setValues] = useState({
@@ -15,16 +16,23 @@ const MeetingTypeList = () => {
     link: ''
   })
   const [callDetails, setCallDetails] = useState<Call>()
-  const router = useRouter()
   const [meetingState, setMeetingState] = useState<'isScheduleMeeting' | 'isJoiningMeeting' | 'isInstantMeeting' | undefined>()
 
   const { user } = useUser()
   const client = useStreamVideoClient()
+  const router = useRouter()
+  const { toast } = useToast()
 
   const createMeeting = async () => {
     if(!client || !user) return;
 
     try {
+      if(!values.dateTime){
+        toast({
+          title: "Plese select a date and time",
+        })
+        return;
+      }
       const id = crypto.randomUUID();
       const call = client.call('default', id);
 
@@ -47,8 +55,14 @@ const MeetingTypeList = () => {
       if(!values.description) {
         router.push(`/meeting/${call.id}`)
       }
+      toast({
+        title: "Meeting Created!",
+      })
     } catch (error) {
       console.log(error)
+      toast({
+        title: "Failed to create meeting!!!",
+      })
     }
   } 
 

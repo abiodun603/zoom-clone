@@ -1,4 +1,4 @@
-import React from 'react'
+import CallList from '@/components/meeting/call-list'
 
 const Recordings = () => {
   return (
@@ -6,6 +6,8 @@ const Recordings = () => {
       <h1 className="text-3xl font-bold">
         Recording
       </h1>
+
+      <CallList type="recordings" />
     </section>
   )
 }
